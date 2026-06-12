@@ -29,10 +29,11 @@ class Pdf2htmlex < Formula
   depends_on :macos
 
   def install
-    # Tarball top-level dir is pdf2htmlEX/{bin,lib,share}.
-    bin.install Dir["pdf2htmlEX/bin/*"]
-    lib.install Dir["pdf2htmlEX/lib/*"]
-    (share/"pdf2htmlEX").install Dir["pdf2htmlEX/share/pdf2htmlEX/*"]
+    # The tarball's single top-level dir (pdf2htmlEX/) is stripped by
+    # Homebrew on extraction, so contents are bin/, lib/, share/ here.
+    bin.install Dir["bin/*"]
+    lib.install Dir["lib/*"]
+    (share/"pdf2htmlEX").install Dir["share/pdf2htmlEX/*"]
   end
 
   test do
