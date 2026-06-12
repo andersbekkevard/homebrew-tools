@@ -26,14 +26,21 @@ class Pdf2htmlex < Formula
 
   # Prebuilt arm64 bundle only.
   depends_on arch: :arm64
-  depends_on :macos
 
   def install
     # The tarball's single top-level dir (pdf2htmlEX/) is stripped by
     # Homebrew on extraction, so contents are bin/, lib/, share/ here.
-    bin.install Dir["bin/*"]
-    lib.install Dir["lib/*"]
-    (share/"pdf2htmlEX").install Dir["share/pdf2htmlEX/*"]
+    #
+    # The bundled dylibs in lib/ share filenames with real Homebrew kegs
+    # (libcairo, libglib, libpng, …). Installing them into the formula's
+    # `lib` would make `brew link` shadow those kegs' dylibs in
+    # /opt/homebrew/lib and break every other formula. So the whole bundle
+    # lives under libexec/ (never auto-linked), and only the binary is
+    # symlinked into bin. The binary loads its deps via
+    # @executable_path/../lib, which resolves through the symlink to
+    # libexec/lib, so relocation still holds.
+    libexec.install Dir["bin", "lib", "share"]
+    bin.install_symlink libexec/"bin/pdf2htmlEX"
   end
 
   test do
